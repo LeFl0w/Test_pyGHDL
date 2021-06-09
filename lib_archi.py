@@ -38,7 +38,7 @@ def list_units(filename):
         libraryUnit = nodes.Get_Library_Unit(designUnit)
 
         if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
-            print(nodes.location(libraryUnit))
+            print(nodes.Get_Location(libraryUnit))
             print("entity %s" % getIdentifier(libraryUnit))
 
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:

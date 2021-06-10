@@ -58,13 +58,7 @@ def list_units(filename):
 
         if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
-            #internal AST conversion tables up to line
-            loc = nodes.Get_Location(libraryUnit)
-            fil = files_map.Location_To_File(loc)
-            pos = files_map.Location_File_To_Pos(loc, fil)
-            line = files_map.Location_File_To_Line(loc, fil)
-            col = files_map.Location_File_Line_To_Offset(loc, fil, line)
-            print("name:"+ str(getIdentifier(libraryUnit)) + " line "+ str(getNodeLineInFile(libraryUnit)) + " column "+str(getNodeColumInFile(libraryUnit)))
+            print("name:"+ str(name) + " line "+ str(getNodeLineInFile(libraryUnit)) + " column "+str(getNodeColumInFile(libraryUnit)))
 
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:
             print("architecture %s" % getIdentifier(libraryUnit))

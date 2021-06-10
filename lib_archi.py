@@ -38,6 +38,15 @@ def getNodeColumInFile (node):
     col = files_map.Location_File_Line_To_Offset(loc, fil, line)
     return col
 
+def GetNodeType (node):
+    """Return the name of the node type"""
+    if nodes.Get_Kind(node) == nodes.Iir_Kind.Entity_Declaration:
+        return "Entity name "
+    elif nodes.Get_Kind(node) == nodes.Iir_Kind.Architecture_Body:
+         return "Architecture name "
+    else :
+        return "Unknown type "
+
 def list_units(filename):
     # Load the file
     file_id = name_table.Get_Identifier(str(filename))
@@ -51,17 +60,19 @@ def list_units(filename):
 
     # Display all design units
     designUnit = nodes.Get_First_Design_Unit(file)
-    print("name:"+ str(getIdentifier(designUnit)) + " line "+ str(getNodeLineInFile(designUnit)) + " column "+ str(getNodeColumInFile(designUnit)))
+
+    print(GetNodeType(designUnit)+ str(getIdentifier(designUnit)) + " line "+ str(getNodeLineInFile(designUnit)) + " column "+ str(getNodeColumInFile(designUnit)))
     
     while designUnit != nodes.Null_Iir:
         libraryUnit = nodes.Get_Library_Unit(designUnit)
 
         if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
-            print("name:"+ str(name) + " line "+ str(getNodeLineInFile(libraryUnit)) + " column "+str(getNodeColumInFile(libraryUnit)))
+            print(GetNodeType(libraryUnit)+ str(name) + " line "+ str(getNodeLineInFile(libraryUnit)) + " column "+str(getNodeColumInFile(libraryUnit)))
 
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:
-            print("architecture %s" % getIdentifier(libraryUnit))
+            name=getIdentifier(libraryUnit)
+            print(GetNodeType(libraryUnit) + str(name))
             
         else:
             print("unknown designUnit!")

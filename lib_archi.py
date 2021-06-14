@@ -40,7 +40,9 @@ def getNodeColumInFile (node):
 
 def GetNodeType (node):
     """Return the name of the node type"""
-    if nodes.Get_Kind(node) == nodes.Iir_Kind.Entity_Declaration:
+    if nodes.Get_Kind(node) == nodes.Iir_Kind.Design_Unit:
+        return "Design name "
+    elif nodes.Get_Kind(node) == nodes.Iir_Kind.Entity_Declaration:
         return "Entity name "
     elif nodes.Get_Kind(node) == nodes.Iir_Kind.Architecture_Body:
          return "Architecture name "
@@ -60,9 +62,9 @@ def list_units(filename):
 
     # Display all design units
     designUnit = nodes.Get_First_Design_Unit(file)
-
     print(GetNodeType(designUnit)+ str(getIdentifier(designUnit)) + " line "+ str(getNodeLineInFile(designUnit)) + " column "+ str(getNodeColumInFile(designUnit)))
-    
+  
+
     while designUnit != nodes.Null_Iir:
         libraryUnit = nodes.Get_Library_Unit(designUnit)
 

@@ -1,7 +1,8 @@
 import pyGHDL.libghdl     as libghdl
 from pyGHDL.libghdl       import name_table, files_map, errorout_console
 from pyGHDL.libghdl.vhdl  import nodes, sem_lib
-
+import pyGHDL.libghdl.utils as pyutils
+import pyGHDL.libghdl.vhdl.nodes_meta as nodes_meta
 
 def init():
     """Initialization: set options and then load libaries"""
@@ -16,6 +17,9 @@ def init():
     # Finish initialization. This will load the standard package.
     if libghdl.analyze_init_status() != 0:
         self.fail("libghdl initialization error")
+
+
+############ Global node functions 
 
 def getIdentifier(node):
     """Return the Python string from node :obj:`node` identifier"""
@@ -38,16 +42,45 @@ def getNodeColumInFile (node):
     col = files_map.Location_File_Line_To_Offset(loc, fil, line)
     return col
 
-def GetNodeType (node):
+def GetNodeType (node) -> str:
     """Return the name of the node type"""
     if nodes.Get_Kind(node) == nodes.Iir_Kind.Design_Unit:
-        return "Design name "
+        return "Design name: "
     elif nodes.Get_Kind(node) == nodes.Iir_Kind.Entity_Declaration:
-        return "Entity name "
+        return "Entity name: "
+    elif  nodes.Get_Kind(node) == nodes.Iir_Kind.Interface_Signal_Declaration:
+        return "Entity Interface port name: "
     elif nodes.Get_Kind(node) == nodes.Iir_Kind.Architecture_Body:
-         return "Architecture name "
+         return "Architecture name: "
     else :
-        return "Unknown type "
+        return "Unknown type: "
+
+def DisplayNodeInfo(node) -> str:
+    """Return General information regarding the node"""
+    return GetNodeType(node)+ str(getIdentifier(node)) + " |l-"+ str(getNodeLineInFile(node)) + " c-:"+ str(getNodeColumInFile(node))
+
+### Type port specific function
+def get_port_mode(port) -> str:
+    """Return the Mode of a port, as a string"""
+    mode = nodes.Get_Mode(port)
+    return (
+        "in"
+        if mode == nodes.Iir_Mode.In_Mode
+        else "out"
+        if mode == nodes.Iir_Mode.Out_Mode
+        else "inout"
+        if mode == nodes.Iir_Mode.Inout_Mode
+        else "buffer"
+        if mode == nodes.Iir_Mode.Buffer_Mode
+        else "linkage"
+        if mode == nodes.Iir_Mode.Linkage_Mode
+        else "unknown"
+    )
+def DisplayPortInfo(node) -> str:
+    """Return General information regarding the the port"""
+    return  DisplayNodeInfo(node) + " |Dir :"+ get_port_mode(node) 
+
+
 
 def list_units(filename):
     # Load the file
@@ -62,16 +95,23 @@ def list_units(filename):
 
     # Display all design units
     designUnit = nodes.Get_First_Design_Unit(file)
-    print(GetNodeType(designUnit)+ str(getIdentifier(designUnit)) + " line "+ str(getNodeLineInFile(designUnit)) + " column "+ str(getNodeColumInFile(designUnit)))
-  
+    print(DisplayNodeInfo(designUnit))
 
     while designUnit != nodes.Null_Iir:
         libraryUnit = nodes.Get_Library_Unit(designUnit)
 
         if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
-            print(GetNodeType(libraryUnit)+ str(name) + " line "+ str(getNodeLineInFile(libraryUnit)) + " column "+str(getNodeColumInFile(libraryUnit)))
+            print(DisplayNodeInfo(designUnit))
+            if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
+                print("Info: Entity has got ports")
+                for port in pyutils.chain_iter(nodes.Get_Port_Chain(libraryUnit)):
+                    nameport=getIdentifier(port)
+                    print(DisplayPortInfo(port))
+            else :
+                 print("Info: Entity hasn't got any port")
 
+            
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:
             name=getIdentifier(libraryUnit)
             print(GetNodeType(libraryUnit) + str(name))

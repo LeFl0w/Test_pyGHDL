@@ -67,18 +67,60 @@ def get_port_mode(port) -> str:
         "in"
         if mode == nodes.Iir_Mode.In_Mode
         else "out"
+
         if mode == nodes.Iir_Mode.Out_Mode
         else "inout"
+
         if mode == nodes.Iir_Mode.Inout_Mode
         else "buffer"
+
         if mode == nodes.Iir_Mode.Buffer_Mode
         else "linkage"
+
         if mode == nodes.Iir_Mode.Linkage_Mode
         else "unknown"
     )
+
+def get_port_type(port) -> str:
+    "Return the Type of a port, as a string"
+    subtype = nodes.Get_Subtype_Indication(port)
+    if subtype == nodes.Null_Iir:
+        #we are dealing with ownership problem. 
+        #This port should have the same type as the previous type definition
+        #see /doc/internals/AST.rst
+        if nodes.Get_Is_Ref(port):
+            #FIXME : How to get back to previous subtype definition?
+            return "same definition as previous one"
+        else:
+            return "Unknown empty Type."
+
+    else:
+        skind = nodes.Get_Kind(subtype)
+
+        if skind == nodes.Iir_Kind.Simple_Name:
+            return getIdentifier(subtype)
+        
+        if skind == nodes.Iir_Kind.Array_Subtype_Definition:
+
+            mark = getIdentifier(nodes.Get_Subtype_Type_Mark(subtype))
+        
+            for rng in pyutils.flist_iter(nodes.Get_Index_Constraint_List(subtype)):
+                if nodes.Get_Kind(rng) == nodes.Iir_Kind.Range_Expression:
+                    return "%s(%d %s %d)" % (
+                        mark,
+                        nodes.Get_Value(nodes.Get_Left_Limit_Expr(rng)),
+                        "downto" if nodes.Get_Direction(rng) else "to",
+                        nodes.Get_Value(nodes.Get_Right_Limit_Expr(rng)),
+                    )
+                return "UNSUPPORTED array_subtype_definition"
+       #FIXME cannot find the type  subtype_indication: subtype_definition [868]
+       #try to display element from list Type_And_Subtype_Definition in nodes.py 
+
+    return "UNSUPPORTED"
+
 def DisplayPortInfo(node) -> str:
     """Return General information regarding the the port"""
-    return  DisplayNodeInfo(node) + " |Dir :"+ get_port_mode(node) 
+    return  DisplayNodeInfo(node) + " |Dir :"+ get_port_mode(node) + " |Type: " +get_port_type(node)
 
 
 
@@ -106,10 +148,10 @@ def list_units(filename):
             if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
                 print("Info: Entity has got ports")
                 for port in pyutils.chain_iter(nodes.Get_Port_Chain(libraryUnit)):
-                    nameport=getIdentifier(port)
+
                     print(DisplayPortInfo(port))
             else :
-                 print("Info: Entity hasn't got any port")
+                print("Info: Entity hasn't got any port")
 
             
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:

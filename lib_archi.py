@@ -80,6 +80,7 @@ def get_port_mode(port) -> str:
         if mode == nodes.Iir_Mode.Linkage_Mode
         else "unknown"
     )
+    
 
 def get_port_type(port) -> str:
     "Return the Type of a port, as a string"
@@ -97,11 +98,12 @@ def get_port_type(port) -> str:
     else:
         skind = nodes.Get_Kind(subtype)
 
+        #type simple name (node is subtype_indication)
         if skind == nodes.Iir_Kind.Simple_Name:
             return getIdentifier(subtype)
         
-        if skind == nodes.Iir_Kind.Array_Subtype_Definition:
-
+        #type array subtype (node is subtype_indication)
+        if skind == nodes.Iir_Kind.Array_Subtype_Definition  :
             mark = getIdentifier(nodes.Get_Subtype_Type_Mark(subtype))
         
             for rng in pyutils.flist_iter(nodes.Get_Index_Constraint_List(subtype)):
@@ -113,8 +115,20 @@ def get_port_type(port) -> str:
                         nodes.Get_Value(nodes.Get_Right_Limit_Expr(rng)),
                     )
                 return "UNSUPPORTED array_subtype_definition"
-       #FIXME cannot find the type  subtype_indication: subtype_definition [868]
-       #try to display element from list Type_And_Subtype_Definition in nodes.py 
+
+        #this type includes integer with range definition (node is subtype_indication)
+        if skind == nodes.Iir_Kind.Subtype_Definition :
+            #get type
+            MarkType = getIdentifier(nodes.Get_Subtype_Type_Mark(subtype))
+
+            #get informations from subnode range_expression
+            NodeRangeExpression=nodes.Get_Range_Constraint(subtype)
+            #get ranges 
+            LeftBound=nodes.Get_Value(nodes.Get_Left_Limit_Expr(NodeRangeExpression))
+            Direction="downto" if nodes.Get_Direction(NodeRangeExpression) else "to"
+            RightBound=nodes.Get_Value(nodes.Get_Right_Limit_Expr(NodeRangeExpression))
+
+            return MarkType+" " + str(LeftBound) +" " +str(Direction)+" "+str(RightBound)
 
     return "UNSUPPORTED"
 

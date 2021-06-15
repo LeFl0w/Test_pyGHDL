@@ -158,7 +158,7 @@ def list_units(filename):
 
         if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
-            print(DisplayNodeInfo(designUnit))
+            print(DisplayNodeInfo(libraryUnit))
             if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
                 print("Info: Entity has got ports")
                 for port in pyutils.chain_iter(nodes.Get_Port_Chain(libraryUnit)):

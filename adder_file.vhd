@@ -23,6 +23,15 @@ entity adder is
 end adder;
 
 architecture rtl of adder is
+  constant C_LEFTBOUND :integer:= 10;
+
+  signal sig1_int : integer;
+  signal sig2_int : integer range 4 to 5;
+
+  signal sig3_std_logic : std_logic;
+  signal sig4_std_logic_vector: std_logic_vector(4 downto 0);
+  signal sig5 : std_logic_vector(C_LEFTBOUND downto 0);
+  signal sig6: std_logic_vector(30 downto sig5'right);
 begin
    --  This full-adder architecture contains two concurrent assignment.
    --  Compute the sum.

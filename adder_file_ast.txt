@@ -471,9 +471,364 @@ design_unit "rtl" [874]
       named_entity: *null*
       base_name: *null*
     declaration_chain: 
+      constant_declaration "c_leftbound" [880]
+        location: adder_file.vhd:26:12
+        identifier: "c_leftbound" [1057]
+        deferred_declaration_flag: false
+        is_ref: false
+        has_identifier_list: false
+        visible_flag: false
+        use_flag: false
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [883]
+        subtype_indication: simple_name "integer" [879]
+          location: adder_file.vhd:26:25
+          identifier: "integer" [627]
+          is_forward_ref: false
+          expr_staticness: ???
+          name_staticness: ???
+          type: *null*
+          named_entity: *null*
+          base_name: *null*
+        default_value: integer_literal [882]
+          location: adder_file.vhd:26:35
+          literal_length:  2
+          value:  10
+          expr_staticness: ???
+          literal_origin: *null*
+          type: *null*
+        type: *null*
+        deferred_declaration: *null*
+      signal_declaration "sig1_int" [883]
+        location: adder_file.vhd:28:10
+        identifier: "sig1_int" [1058]
+        has_disconnect_flag: false
+        is_ref: false
+        has_active_flag: false
+        has_identifier_list: false
+        visible_flag: false
+        after_drivers_flag: false
+        use_flag: false
+        guarded_signal_flag: false
+        signal_kind: bus
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [885]
+        subtype_indication: simple_name "integer" [884]
+          location: adder_file.vhd:28:21
+          identifier: "integer" [627]
+          is_forward_ref: false
+          expr_staticness: ???
+          name_staticness: ???
+          type: *null*
+          named_entity: *null*
+          base_name: *null*
+        default_value: *null*
+        type: *null*
+      signal_declaration "sig2_int" [885]
+        location: adder_file.vhd:29:10
+        identifier: "sig2_int" [1059]
+        has_disconnect_flag: false
+        is_ref: false
+        has_active_flag: false
+        has_identifier_list: false
+        visible_flag: false
+        after_drivers_flag: false
+        use_flag: false
+        guarded_signal_flag: false
+        signal_kind: bus
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [892]
+        subtype_indication: subtype_definition [888]
+          location: adder_file.vhd:29:21
+          is_ref: false
+          range_constraint: range_expression [890]
+            location: adder_file.vhd:29:35
+            direction: to
+            expr_staticness: ???
+            left_limit_expr: integer_literal [887]
+              location: adder_file.vhd:29:35
+              literal_length:  1
+              value:  4
+              expr_staticness: ???
+              literal_origin: *null*
+              type: *null*
+            right_limit_expr: integer_literal [891]
+              location: adder_file.vhd:29:40
+              literal_length:  1
+              value:  5
+              expr_staticness: ???
+              literal_origin: *null*
+              type: *null*
+            range_origin: *null*
+            type: *null*
+            left_limit: *null*
+            right_limit: *null*
+          subtype_type_mark: simple_name "integer" [886]
+            location: adder_file.vhd:29:21
+            identifier: "integer" [627]
+            is_forward_ref: false
+            expr_staticness: ???
+            name_staticness: ???
+            type: *null*
+            named_entity: *null*
+            base_name: *null*
+          type_declarator: *null*
+          parent_type: *null*
+          resolution_indication: *null*
+          tolerance: *null*
+        default_value: *null*
+        type: *null*
+      signal_declaration "sig3_std_logic" [892]
+        location: adder_file.vhd:31:10
+        identifier: "sig3_std_logic" [1060]
+        has_disconnect_flag: false
+        is_ref: false
+        has_active_flag: false
+        has_identifier_list: false
+        visible_flag: false
+        after_drivers_flag: false
+        use_flag: false
+        guarded_signal_flag: false
+        signal_kind: bus
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [894]
+        subtype_indication: simple_name "std_logic" [893]
+          location: adder_file.vhd:31:27
+          identifier: "std_logic" [794]
+          is_forward_ref: false
+          expr_staticness: ???
+          name_staticness: ???
+          type: *null*
+          named_entity: *null*
+          base_name: *null*
+        default_value: *null*
+        type: *null*
+      signal_declaration "sig4_std_logic_vector" [894]
+        location: adder_file.vhd:32:10
+        identifier: "sig4_std_logic_vector" [1061]
+        has_disconnect_flag: false
+        is_ref: false
+        has_active_flag: false
+        has_identifier_list: false
+        visible_flag: false
+        after_drivers_flag: false
+        use_flag: false
+        guarded_signal_flag: false
+        signal_kind: bus
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [901]
+        subtype_indication: array_subtype_definition [896]
+          location: adder_file.vhd:32:49
+          resolved_flag: false
+          signal_type_flag: false
+          has_signal_flag: false
+          index_constraint_flag: true
+          has_array_constraint_flag: true
+          has_element_constraint_flag: false
+          type_staticness: ???
+          constraint_state: unconstrained
+          subtype_type_mark: simple_name "std_logic_vector" [895]
+            location: adder_file.vhd:32:33
+            identifier: "std_logic_vector" [795]
+            is_forward_ref: false
+            expr_staticness: ???
+            name_staticness: ???
+            type: *null*
+            named_entity: *null*
+            base_name: *null*
+          resolution_indication: *null*
+          index_constraint_list: 
+            range_expression [899]
+              location: adder_file.vhd:32:50
+              direction: downto
+              expr_staticness: ???
+              left_limit_expr: integer_literal [898]
+                location: adder_file.vhd:32:50
+                literal_length:  1
+                value:  4
+                expr_staticness: ???
+                literal_origin: *null*
+                type: *null*
+              right_limit_expr: integer_literal [900]
+                location: adder_file.vhd:32:59
+                literal_length:  1
+                value:  0
+                expr_staticness: ???
+                literal_origin: *null*
+                type: *null*
+              range_origin: *null*
+              type: *null*
+              left_limit: *null*
+              right_limit: *null*
+          index_subtype_list: null-flist
+          array_element_constraint: *null*
+          tolerance: *null*
+          element_subtype: *null*
+          type_declarator: *null*
+          parent_type: *null*
+        default_value: *null*
+        type: *null*
+      signal_declaration "sig5" [901]
+        location: adder_file.vhd:33:10
+        identifier: "sig5" [1062]
+        has_disconnect_flag: false
+        is_ref: false
+        has_active_flag: false
+        has_identifier_list: false
+        visible_flag: false
+        after_drivers_flag: false
+        use_flag: false
+        guarded_signal_flag: false
+        signal_kind: bus
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [908]
+        subtype_indication: array_subtype_definition [904]
+          location: adder_file.vhd:33:33
+          resolved_flag: false
+          signal_type_flag: false
+          has_signal_flag: false
+          index_constraint_flag: true
+          has_array_constraint_flag: true
+          has_element_constraint_flag: false
+          type_staticness: ???
+          constraint_state: unconstrained
+          subtype_type_mark: simple_name "std_logic_vector" [902]
+            location: adder_file.vhd:33:17
+            identifier: "std_logic_vector" [795]
+            is_forward_ref: false
+            expr_staticness: ???
+            name_staticness: ???
+            type: *null*
+            named_entity: *null*
+            base_name: *null*
+          resolution_indication: *null*
+          index_constraint_list: 
+            range_expression [906]
+              location: adder_file.vhd:33:34
+              direction: downto
+              expr_staticness: ???
+              left_limit_expr: simple_name "c_leftbound" [903]
+                location: adder_file.vhd:33:34
+                identifier: "c_leftbound" [1057]
+                is_forward_ref: false
+                expr_staticness: ???
+                name_staticness: ???
+                type: *null*
+                named_entity: *null*
+                base_name: *null*
+              right_limit_expr: integer_literal [907]
+                location: adder_file.vhd:33:53
+                literal_length:  1
+                value:  0
+                expr_staticness: ???
+                literal_origin: *null*
+                type: *null*
+              range_origin: *null*
+              type: *null*
+              left_limit: *null*
+              right_limit: *null*
+          index_subtype_list: null-flist
+          array_element_constraint: *null*
+          tolerance: *null*
+          element_subtype: *null*
+          type_declarator: *null*
+          parent_type: *null*
+        default_value: *null*
+        type: *null*
+      signal_declaration "sig6" [908]
+        location: adder_file.vhd:34:10
+        identifier: "sig6" [1063]
+        has_disconnect_flag: false
+        is_ref: false
+        has_active_flag: false
+        has_identifier_list: false
+        visible_flag: false
+        after_drivers_flag: false
+        use_flag: false
+        guarded_signal_flag: false
+        signal_kind: bus
+        expr_staticness: ???
+        name_staticness: ???
+        parent: architecture_body "rtl" [876]
+        chain: [0]
+        subtype_indication: array_subtype_definition [910]
+          location: adder_file.vhd:34:32
+          resolved_flag: false
+          signal_type_flag: false
+          has_signal_flag: false
+          index_constraint_flag: true
+          has_array_constraint_flag: true
+          has_element_constraint_flag: false
+          type_staticness: ???
+          constraint_state: unconstrained
+          subtype_type_mark: simple_name "std_logic_vector" [909]
+            location: adder_file.vhd:34:16
+            identifier: "std_logic_vector" [795]
+            is_forward_ref: false
+            expr_staticness: ???
+            name_staticness: ???
+            type: *null*
+            named_entity: *null*
+            base_name: *null*
+          resolution_indication: *null*
+          index_constraint_list: 
+            range_expression [913]
+              location: adder_file.vhd:34:33
+              direction: downto
+              expr_staticness: ???
+              left_limit_expr: integer_literal [912]
+                location: adder_file.vhd:34:33
+                literal_length:  2
+                value:  30
+                expr_staticness: ???
+                literal_origin: *null*
+                type: *null*
+              right_limit_expr: attribute_name "right" [915]
+                location: adder_file.vhd:34:48
+                identifier: "right" [572]
+                is_forward_ref: false
+                expr_staticness: ???
+                name_staticness: ???
+                prefix: simple_name "sig5" [914]
+                  location: adder_file.vhd:34:43
+                  identifier: "sig5" [1062]
+                  is_forward_ref: false
+                  expr_staticness: ???
+                  name_staticness: ???
+                  type: *null*
+                  named_entity: *null*
+                  base_name: *null*
+                type: *null*
+                attribute_signature: *null*
+                named_entity: *null*
+                base_name: *null*
+              range_origin: *null*
+              type: *null*
+              left_limit: *null*
+              right_limit: *null*
+          index_subtype_list: null-flist
+          array_element_constraint: *null*
+          tolerance: *null*
+          element_subtype: *null*
+          type_declarator: *null*
+          parent_type: *null*
+        default_value: *null*
+        type: *null*
     concurrent_statement_chain: 
-      concurrent_simple_signal_assignment <anonymous> [880]
-        location: adder_file.vhd:29:4
+      concurrent_simple_signal_assignment <anonymous> [918]
+        location: adder_file.vhd:38:4
         label: <anonymous> [0]
         delay_mechanism: inertial
         is_ref: false
@@ -482,8 +837,8 @@ design_unit "rtl" [874]
         visible_flag: false
         guarded_target_state: unknown
         parent: architecture_body "rtl" [876]
-        target: simple_name "s" [879]
-          location: adder_file.vhd:29:4
+        target: simple_name "s" [916]
+          location: adder_file.vhd:38:4
           identifier: "s" [752]
           is_forward_ref: false
           expr_staticness: ???
@@ -491,21 +846,21 @@ design_unit "rtl" [874]
           type: *null*
           named_entity: *null*
           base_name: *null*
-        chain: [890]
+        chain: [926]
         reject_time_expression: *null*
         waveform_chain: 
-          waveform_element [882]
-            location: adder_file.vhd:29:9
-            we_value: xor_operator [886]
-              location: adder_file.vhd:29:19
+          waveform_element [917]
+            location: adder_file.vhd:38:9
+            we_value: xor_operator [923]
+              location: adder_file.vhd:38:19
               expr_staticness: ???
               type: *null*
-              left: xor_operator [884]
-                location: adder_file.vhd:29:12
+              left: xor_operator [921]
+                location: adder_file.vhd:38:12
                 expr_staticness: ???
                 type: *null*
-                left: simple_name "i0" [883]
-                  location: adder_file.vhd:29:9
+                left: simple_name "i0" [920]
+                  location: adder_file.vhd:38:9
                   identifier: "i0" [1048]
                   is_forward_ref: false
                   expr_staticness: ???
@@ -514,8 +869,8 @@ design_unit "rtl" [874]
                   named_entity: *null*
                   base_name: *null*
                 implementation: *null*
-                right: simple_name "i1" [885]
-                  location: adder_file.vhd:29:16
+                right: simple_name "i1" [922]
+                  location: adder_file.vhd:38:16
                   identifier: "i1" [1049]
                   is_forward_ref: false
                   expr_staticness: ???
@@ -524,8 +879,8 @@ design_unit "rtl" [874]
                   named_entity: *null*
                   base_name: *null*
               implementation: *null*
-              right: simple_name "ci" [887]
-                location: adder_file.vhd:29:23
+              right: simple_name "ci" [924]
+                location: adder_file.vhd:38:23
                 identifier: "ci" [1050]
                 is_forward_ref: false
                 expr_staticness: ???
@@ -536,8 +891,8 @@ design_unit "rtl" [874]
             time: *null*
             chain: [0]
         guard: *null*
-      concurrent_simple_signal_assignment <anonymous> [890]
-        location: adder_file.vhd:31:4
+      concurrent_simple_signal_assignment <anonymous> [926]
+        location: adder_file.vhd:40:4
         label: <anonymous> [0]
         delay_mechanism: inertial
         is_ref: false
@@ -546,8 +901,8 @@ design_unit "rtl" [874]
         visible_flag: false
         guarded_target_state: unknown
         parent: architecture_body "rtl" [876]
-        target: simple_name "co" [888]
-          location: adder_file.vhd:31:4
+        target: simple_name "co" [925]
+          location: adder_file.vhd:40:4
           identifier: "co" [1051]
           is_forward_ref: false
           expr_staticness: ???
@@ -558,22 +913,22 @@ design_unit "rtl" [874]
         chain: [0]
         reject_time_expression: *null*
         waveform_chain: 
-          waveform_element [889]
-            location: adder_file.vhd:31:10
-            we_value: or_operator [899]
-              location: adder_file.vhd:31:37
+          waveform_element [928]
+            location: adder_file.vhd:40:10
+            we_value: or_operator [936]
+              location: adder_file.vhd:40:37
               expr_staticness: ???
               type: *null*
-              left: or_operator [895]
-                location: adder_file.vhd:31:22
+              left: or_operator [932]
+                location: adder_file.vhd:40:22
                 expr_staticness: ???
                 type: *null*
-                left: and_operator [893]
-                  location: adder_file.vhd:31:14
+                left: and_operator [930]
+                  location: adder_file.vhd:40:14
                   expr_staticness: ???
                   type: *null*
-                  left: simple_name "i0" [892]
-                    location: adder_file.vhd:31:11
+                  left: simple_name "i0" [929]
+                    location: adder_file.vhd:40:11
                     identifier: "i0" [1048]
                     is_forward_ref: false
                     expr_staticness: ???
@@ -582,8 +937,8 @@ design_unit "rtl" [874]
                     named_entity: *null*
                     base_name: *null*
                   implementation: *null*
-                  right: simple_name "i1" [894]
-                    location: adder_file.vhd:31:18
+                  right: simple_name "i1" [931]
+                    location: adder_file.vhd:40:18
                     identifier: "i1" [1049]
                     is_forward_ref: false
                     expr_staticness: ???
@@ -592,12 +947,12 @@ design_unit "rtl" [874]
                     named_entity: *null*
                     base_name: *null*
                 implementation: *null*
-                right: and_operator [897]
-                  location: adder_file.vhd:31:29
+                right: and_operator [934]
+                  location: adder_file.vhd:40:29
                   expr_staticness: ???
                   type: *null*
-                  left: simple_name "i0" [896]
-                    location: adder_file.vhd:31:26
+                  left: simple_name "i0" [933]
+                    location: adder_file.vhd:40:26
                     identifier: "i0" [1048]
                     is_forward_ref: false
                     expr_staticness: ???
@@ -606,8 +961,8 @@ design_unit "rtl" [874]
                     named_entity: *null*
                     base_name: *null*
                   implementation: *null*
-                  right: simple_name "ci" [898]
-                    location: adder_file.vhd:31:33
+                  right: simple_name "ci" [935]
+                    location: adder_file.vhd:40:33
                     identifier: "ci" [1050]
                     is_forward_ref: false
                     expr_staticness: ???
@@ -616,12 +971,12 @@ design_unit "rtl" [874]
                     named_entity: *null*
                     base_name: *null*
               implementation: *null*
-              right: and_operator [901]
-                location: adder_file.vhd:31:44
+              right: and_operator [938]
+                location: adder_file.vhd:40:44
                 expr_staticness: ???
                 type: *null*
-                left: simple_name "i1" [900]
-                  location: adder_file.vhd:31:41
+                left: simple_name "i1" [937]
+                  location: adder_file.vhd:40:41
                   identifier: "i1" [1049]
                   is_forward_ref: false
                   expr_staticness: ???
@@ -630,8 +985,8 @@ design_unit "rtl" [874]
                   named_entity: *null*
                   base_name: *null*
                 implementation: *null*
-                right: simple_name "ci" [902]
-                  location: adder_file.vhd:31:48
+                right: simple_name "ci" [939]
+                  location: adder_file.vhd:40:48
                   identifier: "ci" [1050]
                   is_forward_ref: false
                   expr_staticness: ???

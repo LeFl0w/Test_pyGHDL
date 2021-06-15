@@ -154,8 +154,10 @@ def list_units(filename):
     print(DisplayNodeInfo(designUnit))
 
     while designUnit != nodes.Null_Iir:
+        #analysing nodes of type library Unit
         libraryUnit = nodes.Get_Library_Unit(designUnit)
 
+        #VHDL entity
         if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
             print(DisplayNodeInfo(libraryUnit))
@@ -167,7 +169,7 @@ def list_units(filename):
             else :
                 print("Info: Entity hasn't got any port")
 
-            
+        #VHDL Architecture    
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:
             name=getIdentifier(libraryUnit)
             print(GetNodeType(libraryUnit) + str(name))

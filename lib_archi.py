@@ -93,7 +93,7 @@ def EvaluateaAgregDirection(node) -> str:
     #FIXME how to get to Direction_Type  value which is defined in types.ads?
     # value 1 is "downto" 0 is "to"
     if nodes.Get_Direction(node): 
-        Direction=s "downto" 
+        Direction= "downto" 
     else:
         Direction="to"
     return Direction

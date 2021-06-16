@@ -4,6 +4,83 @@ from pyGHDL.libghdl.vhdl  import nodes, sem_lib
 import pyGHDL.libghdl.utils as pyutils
 import pyGHDL.libghdl.vhdl.nodes_meta as nodes_meta
 
+from typing import List, Any, Generator
+
+def constructs_iter(n) -> Generator[Any, None, None]:
+    """
+    Iterate library units, concurrent statements and declarations
+    that appear directly within a declarative part.
+    """
+    if n == nodes.Null_Iir:
+        print("end")
+        return
+    k = nodes.Get_Kind(n)
+    if k == nodes.Iir_Kind.Design_File:
+        for n1 in pyutils.chain_iter(nodes.Get_First_Design_Unit(n)):
+            for n2 in constructs_iter(n1):
+                yield n2
+   # elif k == nodes.Iir_Kind.Design_Unit:
+   #     n1 = nodes.Get_Library_Unit(n)
+   #     yield n1
+   #     for n2 in constructs_iter(n1):
+   #         print(str(n2))
+    #        yield n2
+    #        #print(str(k))
+
+    elif k in (
+        nodes.Iir_Kind.Entity_Declaration,
+        nodes.Iir_Kind.Architecture_Body,
+        nodes.Iir_Kind.Block_Statement,
+        nodes.Iir_Kind.Generate_Statement_Body,
+    ):
+        for n1 in pyutils.chain_iter(nodes.Get_Declaration_Chain(n)):
+            yield n1
+            for n2 in constructs_iter(n1):
+                yield n2
+        for n1 in pyutils.chain_iter(nodes.Get_Concurrent_Statement_Chain(n)):
+            yield n1
+            for n2 in constructs_iter(n1):
+                yield n2
+    elif k in (
+        nodes.Iir_Kind.Configuration_Declaration,
+        nodes.Iir_Kind.Package_Declaration,
+        nodes.Iir_Kind.Package_Body,
+        nodes.Iir_Kind.Function_Body,
+        nodes.Iir_Kind.Procedure_Body,
+        nodes.Iir_Kind.Protected_Type_Declaration,
+        nodes.Iir_Kind.Protected_Type_Body,
+        nodes.Iir_Kind.Process_Statement,
+        nodes.Iir_Kind.Sensitized_Process_Statement,
+    ):
+        for n1 in pyutils.chain_iter(nodes.Get_Declaration_Chain(n)):
+            yield n1
+            for n2 in constructs_iter(n1):
+                print(str(k))
+                yield n2
+    elif k == nodes.Iir_Kind.For_Generate_Statement:
+        n1 = nodes.Get_Generate_Statement_Body(n)
+        yield n1
+        for n2 in constructs_iter(n1):
+            yield n2
+    elif k == nodes.Iir_Kind.If_Generate_Statement:
+        while n != nodes.Null_Iir:
+            n1 = nodes.Get_Generate_Statement_Body(n)
+            yield n1
+            for n2 in constructs_iter(n1):
+                yield n2
+            n = nodes.Get_Generate_Else_Clause(n)
+    elif k == nodes.Iir_Kind.Case_Generate_Statement:
+        alt = nodes.Get_Case_Statement_Alternative_Chain(n)
+        for n1 in pyutils.chain_iter(alt):
+            blk = nodes.Get_Associated_Block(n1)
+            if blk != nodes.Null_Iir:
+                n2 = nodes.Get_Generate_Statement_Body(blk)
+                yield n2
+                for n3 in constructs_iter(n2):
+                    yield n3
+
+
+
 def init():
     """Initialization: set options and then load libaries"""
     libghdl.initialize()
@@ -219,10 +296,10 @@ def list_units(filename):
     # Display all design units
     designUnit = nodes.Get_First_Design_Unit(file)
     print(DisplayNodeInfo(designUnit))
-
+    i=0
     #iterate over every VHDL constructs below designUnit
-    for libraryUnit in pyutils.constructs_iter(designUnit):
-
+    #for libraryUnit in pyutils.constructs_iter(designUnit):
+    for libraryUnit in constructs_iter(designUnit):
         #get currently analyzed type
         NodeType=nodes.Get_Kind(libraryUnit)
 
@@ -230,21 +307,22 @@ def list_units(filename):
         if NodeType == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
             print(DisplayNodeInfo(libraryUnit))
-            if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
-                print("Info: Entity has got ports")
-                for port in pyutils.chain_iter(nodes.Get_Port_Chain(libraryUnit)):
-                    print(DisplayPortInfo(port))
-            else :
-                print("Info: Entity hasn't got any port")
+            #if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
+               # print("Info: Entity has got ports")
+               # for port in pyutils.chain_iter(nodes.Get_Port_Chain(libraryUnit)):
+               #     print(DisplayPortInfo(port))
+            #else :
+            #    print("Info: Entity hasn't got any port")
 
         #VHDL Architecture    
         elif NodeType == nodes.Iir_Kind.Architecture_Body:
             name=getIdentifier(libraryUnit)
+            print(DisplayNodeInfo)
             print(GetNodeType(libraryUnit) + str(name))
 
             #iterate over declarations
-            for Declarations in pyutils.declarations_iter(libraryUnit):
-                print(DisplayDeclInfo(Declarations))
+            #for Declarations in pyutils.declarations_iter(libraryUnit):
+            #    print(DisplayDeclInfo(Declarations))
 
         elif NodeType == nodes.Iir_Kind.Block_Statement :
             #TBD

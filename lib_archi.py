@@ -61,15 +61,15 @@ def GetNodeType (node) -> str:
         return "Unknown type: "
 
 def EvaluateRightBoundary(node) -> str:
-    """ Get string value for Iir_Kind.Range_Expression right boundary"""
+    """ Get string value for Iir_Kind.Range_Expression :right boundary"""
     return EvaluateBoundary(node,"Right")
 
 def EvaluateLeftBoundary(node) -> str:
-    """ Get string value for Iir_Kind.Range_Expression Left boundary"""
+    """ Get string value for Iir_Kind.Range_Expression :Left boundary"""
     return EvaluateBoundary(node,"Left")
 
 def EvaluateBoundary(node,dir) -> str:
-    """ Get string value for Iir_Kind.Range_Expression right or left boundary"""
+    """ Get string value for Iir_Kind.Range_Expression :right or left boundary"""
     if dir=="Right":
         Get_Bound=nodes.Get_Right_Limit_Expr
     elif dir =="Left":
@@ -88,6 +88,18 @@ def EvaluateBoundary(node,dir) -> str:
         Bound=getIdentifier(nodes.Get_Prefix(Get_Bound(node)))+"'"+getIdentifier(Get_Bound(node))
     return Bound
 
+def EvaluateaAgregDirection(node) -> str:
+    """ Get string value for Iir_Kind.Range_Expression :direction"""     
+    #FIXME how to get to Direction_Type  value which is defined in types.ads?
+    # value 1 is "downto" 0 is "to"
+    if nodes.Get_Direction(node): 
+        Direction=s "downto" 
+    else:
+        Direction="to"
+    return Direction
+
+
+
 def DisplayNodeInfo(node) -> str:
     """Return General information regarding the node"""
     return GetNodeType(node)+ str(getIdentifier(node)) + " |l-"+ str(getNodeLineInFile(node)) + " c-:"+ str(getNodeColumInFile(node))
@@ -98,7 +110,7 @@ def DisplayNodeInfo(node) -> str:
 
 
 #################################################
-### Type port specific function
+###  port specific function
 #################################################
 def get_port_mode(port) -> str:
     """Return the Mode of a port, as a string"""
@@ -149,7 +161,7 @@ def get_port_type(port) -> str:
             for rng in pyutils.flist_iter(nodes.Get_Index_Constraint_List(subtype)):
                 if nodes.Get_Kind(rng) == nodes.Iir_Kind.Range_Expression:
                     LeftBound=EvaluateLeftBoundary(rng)
-                    Direction="downto" if nodes.Get_Direction(rng) else "to"
+                    Direction=EvaluateaAgregDirection(rng)
                     RightBound=EvaluateRightBoundary(rng)
                     return MarkType+" " + str(LeftBound) +" " +str(Direction)+" "+str(RightBound)
 
@@ -164,7 +176,7 @@ def get_port_type(port) -> str:
             NodeRangeExpression=nodes.Get_Range_Constraint(subtype)
             #get ranges 
             LeftBound=EvaluateLeftBoundary(NodeRangeExpression)
-            Direction="downto" if nodes.Get_Direction(NodeRangeExpression) else "to"
+            Direction=EvaluateaAgregDirection(NodeRangeExpression)
             RightBound=EvaluateRightBoundary(NodeRangeExpression)
 
             return MarkType+" " + str(LeftBound) +" " +str(Direction)+" "+str(RightBound)
@@ -180,15 +192,13 @@ def DisplayPortInfo(node) -> str:
 
 
 #################################################
-### Type declaration specific function
+###  declaration specific function
 #################################################
 def DisplayDeclInfo(node) -> str:
     """Return General information regarding architecture declaration"""
     return  DisplayNodeInfo(node) +" |Type: " +get_port_type(node)
-
-
 #################################################
-### End Type declaration specific function
+### End  declaration specific function
 #################################################
 
 def list_units(filename):

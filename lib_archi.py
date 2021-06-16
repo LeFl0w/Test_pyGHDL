@@ -19,8 +19,9 @@ def init():
         self.fail("libghdl initialization error")
 
 
+#################################################
 ############ Global node functions 
-
+#################################################
 def getIdentifier(node):
     """Return the Python string from node :obj:`node` identifier"""
     return name_table.Get_Name_Ptr(nodes.Get_Identifier(node))
@@ -52,14 +53,50 @@ def GetNodeType (node) -> str:
         return "Entity Interface port name: "
     elif nodes.Get_Kind(node) == nodes.Iir_Kind.Architecture_Body:
          return "Architecture name: "
+    elif nodes.Get_Kind(node) == nodes.Iir_Kind.Constant_Declaration:
+        return "Constant declaration name: "
+    elif nodes.Get_Kind(node) == nodes.Iir_Kind.Signal_Declaration:
+        return "Signal declaration name: "    
     else :
         return "Unknown type: "
+
+def EvaluateRightBoundary(node) -> str:
+    """ Get string value for Iir_Kind.Range_Expression right boundary"""
+    return EvaluateBoundary(node,"Right")
+
+def EvaluateLeftBoundary(node) -> str:
+    """ Get string value for Iir_Kind.Range_Expression Left boundary"""
+    return EvaluateBoundary(node,"Left")
+
+def EvaluateBoundary(node,dir) -> str:
+    """ Get string value for Iir_Kind.Range_Expression right or left boundary"""
+    if dir=="Right":
+        Get_Bound=nodes.Get_Right_Limit_Expr
+    elif dir =="Left":
+        Get_Bound=nodes.Get_Left_Limit_Expr
+    else :
+        return "Invalid Bonndary request"
+
+        #get name if it is driven by a constant
+        if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(node))==nodes.Iir_Kind.Simple_Name: 
+            LeftBound= getIdentifier(nodes.Get_Left_Limit_Expr(node))
+        #if integer return the value
+        if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(node))==nodes.Iir_Kind.Integer_Literal:
+            LeftBound=nodes.Get_Value(nodes.Get_Left_Limit_Expr(node))
+
 
 def DisplayNodeInfo(node) -> str:
     """Return General information regarding the node"""
     return GetNodeType(node)+ str(getIdentifier(node)) + " |l-"+ str(getNodeLineInFile(node)) + " c-:"+ str(getNodeColumInFile(node))
+#################################################
+############End Global node functions 
+#################################################
 
+
+
+#################################################
 ### Type port specific function
+#################################################
 def get_port_mode(port) -> str:
     """Return the Mode of a port, as a string"""
     mode = nodes.Get_Mode(port)
@@ -83,7 +120,7 @@ def get_port_mode(port) -> str:
     
 
 def get_port_type(port) -> str:
-    "Return the Type of a port, as a string"
+    "Return the Type and range of a port, as a string"
     subtype = nodes.Get_Subtype_Indication(port)
     if subtype == nodes.Null_Iir:
         #we are dealing with ownership problem. 
@@ -104,23 +141,34 @@ def get_port_type(port) -> str:
         
         #type array subtype (node is subtype_indication)
         if skind == nodes.Iir_Kind.Array_Subtype_Definition  :
-            mark = getIdentifier(nodes.Get_Subtype_Type_Mark(subtype))
+            MarkType = getIdentifier(nodes.Get_Subtype_Type_Mark(subtype))
         
             for rng in pyutils.flist_iter(nodes.Get_Index_Constraint_List(subtype)):
                 if nodes.Get_Kind(rng) == nodes.Iir_Kind.Range_Expression:
-                    return "%s(%d %s %d)" % (
-                        mark,
-                        nodes.Get_Value(nodes.Get_Left_Limit_Expr(rng)),
-                        "downto" if nodes.Get_Direction(rng) else "to",
-                        nodes.Get_Value(nodes.Get_Right_Limit_Expr(rng)),
-                    )
+                    #get name if it is driven by a constant
+                    if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(rng))==nodes.Iir_Kind.Simple_Name: 
+                        LeftBound= getIdentifier(nodes.Get_Left_Limit_Expr(rng))
+                    #if integer return the value
+                    if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(rng))==nodes.Iir_Kind.Integer_Literal:
+                        LeftBound=nodes.Get_Value(nodes.Get_Left_Limit_Expr(rng))
+
+                    Direction="downto" if nodes.Get_Direction(rng) else "to"
+
+                    if nodes.Get_Kind(nodes.Get_Right_Limit_Expr(rng))==nodes.Iir_Kind.Simple_Name: 
+                        RightBound= getIdentifier(nodes.Get_Right_Limit_Expr(rng))
+                    if nodes.Get_Kind(nodes.Get_Right_Limit_Expr(rng))==nodes.Iir_Kind.Integer_Literal:
+                        RightBound=nodes.Get_Value(nodes.Get_Right_Limit_Expr(rng))
+    
+                    return MarkType+" " + str(LeftBound) +" " +str(Direction)+" "+str(RightBound)
+
+            
                 return "UNSUPPORTED array_subtype_definition"
 
         #this type includes integer with range definition (node is subtype_indication)
+        #the structure is sligtly different from the previous one as there is no list for constraints
         if skind == nodes.Iir_Kind.Subtype_Definition :
             #get type
             MarkType = getIdentifier(nodes.Get_Subtype_Type_Mark(subtype))
-
             #get informations from subnode range_expression
             NodeRangeExpression=nodes.Get_Range_Constraint(subtype)
             #get ranges 
@@ -135,10 +183,28 @@ def get_port_type(port) -> str:
 def DisplayPortInfo(node) -> str:
     """Return General information regarding the the port"""
     return  DisplayNodeInfo(node) + " |Dir :"+ get_port_mode(node) + " |Type: " +get_port_type(node)
+################################################
+##end port specific functions
+#################################################
 
 
+#################################################
+### Type declaration specific function
+#################################################
+def DisplayDeclInfo(node) -> str:
+    """Return General information regarding architecture declaration"""
+    return  DisplayNodeInfo(node) +" |Type: " +get_port_type(node)
+
+
+#################################################
+### End Type declaration specific function
+#################################################
 
 def list_units(filename):
+    """ 
+        Display informations about the VHDL file.
+        At the end this function could be simlar has vhdl-disp_tree but for human eyes
+     """
     # Load the file
     file_id = name_table.Get_Identifier(str(filename))
     sfe = files_map.Read_Source_File(name_table.Null_Identifier, file_id)
@@ -164,7 +230,6 @@ def list_units(filename):
             if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
                 print("Info: Entity has got ports")
                 for port in pyutils.chain_iter(nodes.Get_Port_Chain(libraryUnit)):
-
                     print(DisplayPortInfo(port))
             else :
                 print("Info: Entity hasn't got any port")
@@ -173,7 +238,15 @@ def list_units(filename):
         elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:
             name=getIdentifier(libraryUnit)
             print(GetNodeType(libraryUnit) + str(name))
-            
+
+            if nodes_meta.Has_Declaration_Chain(nodes.Get_Kind(libraryUnit)):
+                print("Info: Architecture  has got declarations")
+                #get every architecture declarations
+                for Declarations in pyutils.declarations_iter(libraryUnit):
+                # for Definitions in pyutils.chain_iter(nodes.Get_Declaration_Chain(libraryUnit)):
+                    print(".")
+                    print(DisplayDeclInfo(Declarations))
+
         else:
             print("unknown designUnit!")
         designUnit = nodes.Get_Chain(designUnit)

@@ -93,7 +93,7 @@ def EvaluateaAgregDirection(node) -> str:
     #FIXME how to get to Direction_Type  value which is defined in types.ads?
     # value 1 is "downto" 0 is "to"
     if nodes.Get_Direction(node): 
-        Direction=s "downto" 
+        Direction="downto" 
     else:
         Direction="to"
     return Direction
@@ -220,12 +220,14 @@ def list_units(filename):
     designUnit = nodes.Get_First_Design_Unit(file)
     print(DisplayNodeInfo(designUnit))
 
-    while designUnit != nodes.Null_Iir:
-        #analysing nodes of type library Unit
-        libraryUnit = nodes.Get_Library_Unit(designUnit)
+    #iterate over every VHDL constructs below designUnit
+    for libraryUnit in pyutils.constructs_iter(designUnit):
+
+        #get currently analyzed type
+        NodeType=nodes.Get_Kind(libraryUnit)
 
         #VHDL entity
-        if nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Entity_Declaration:
+        if NodeType == nodes.Iir_Kind.Entity_Declaration:
             name=getIdentifier(libraryUnit)
             print(DisplayNodeInfo(libraryUnit))
             if nodes_meta.Has_Port_Chain(nodes.Get_Kind(libraryUnit)):
@@ -236,20 +238,25 @@ def list_units(filename):
                 print("Info: Entity hasn't got any port")
 
         #VHDL Architecture    
-        elif nodes.Get_Kind(libraryUnit) == nodes.Iir_Kind.Architecture_Body:
+        elif NodeType == nodes.Iir_Kind.Architecture_Body:
             name=getIdentifier(libraryUnit)
             print(GetNodeType(libraryUnit) + str(name))
 
-            if nodes_meta.Has_Declaration_Chain(nodes.Get_Kind(libraryUnit)):
-                print("Info: Architecture  has got declarations")
-                #get every architecture declarations
-                for Declarations in pyutils.declarations_iter(libraryUnit):
-                # for Definitions in pyutils.chain_iter(nodes.Get_Declaration_Chain(libraryUnit)):
-                    print(DisplayDeclInfo(Declarations))
+            #iterate over declarations
+            for Declarations in pyutils.declarations_iter(libraryUnit):
+                print(DisplayDeclInfo(Declarations))
+
+        elif NodeType == nodes.Iir_Kind.Block_Statement :
+            #TBD
+            print("Warning : To Be Done")
+        
+        elif NodeType == nodes.Iir_Kind.Generate_Statement_Body:
+            #TBD
+            print("Warning : To Be Done")
 
         else:
             print("unknown designUnit!")
-        designUnit = nodes.Get_Chain(designUnit)
+        #designUnit = nodes.Get_Chain(designUnit)
 
 
 def main(self):

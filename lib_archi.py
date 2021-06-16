@@ -77,13 +77,16 @@ def EvaluateBoundary(node,dir) -> str:
     else :
         return "Invalid Bonndary request"
 
-        #get name if it is driven by a constant
-        if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(node))==nodes.Iir_Kind.Simple_Name: 
-            LeftBound= getIdentifier(nodes.Get_Left_Limit_Expr(node))
-        #if integer return the value
-        if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(node))==nodes.Iir_Kind.Integer_Literal:
-            LeftBound=nodes.Get_Value(nodes.Get_Left_Limit_Expr(node))
-
+    #get name if it is driven by a constant
+    if nodes.Get_Kind(Get_Bound(node))==nodes.Iir_Kind.Simple_Name: 
+        Bound= getIdentifier(Get_Bound(node))
+    #integer return the value
+    if nodes.Get_Kind(Get_Bound(node))==nodes.Iir_Kind.Integer_Literal:
+        Bound=nodes.Get_Value(Get_Bound(node))
+    #attribute case
+    if nodes.Get_Kind(Get_Bound(node))==nodes.Iir_Kind.Attribute_Name:
+        Bound="attribute"
+    return Bound
 
 def DisplayNodeInfo(node) -> str:
     """Return General information regarding the node"""
@@ -145,23 +148,11 @@ def get_port_type(port) -> str:
         
             for rng in pyutils.flist_iter(nodes.Get_Index_Constraint_List(subtype)):
                 if nodes.Get_Kind(rng) == nodes.Iir_Kind.Range_Expression:
-                    #get name if it is driven by a constant
-                    if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(rng))==nodes.Iir_Kind.Simple_Name: 
-                        LeftBound= getIdentifier(nodes.Get_Left_Limit_Expr(rng))
-                    #if integer return the value
-                    if nodes.Get_Kind(nodes.Get_Left_Limit_Expr(rng))==nodes.Iir_Kind.Integer_Literal:
-                        LeftBound=nodes.Get_Value(nodes.Get_Left_Limit_Expr(rng))
-
+                    LeftBound=EvaluateLeftBoundary(rng)
                     Direction="downto" if nodes.Get_Direction(rng) else "to"
-
-                    if nodes.Get_Kind(nodes.Get_Right_Limit_Expr(rng))==nodes.Iir_Kind.Simple_Name: 
-                        RightBound= getIdentifier(nodes.Get_Right_Limit_Expr(rng))
-                    if nodes.Get_Kind(nodes.Get_Right_Limit_Expr(rng))==nodes.Iir_Kind.Integer_Literal:
-                        RightBound=nodes.Get_Value(nodes.Get_Right_Limit_Expr(rng))
-    
+                    RightBound=EvaluateRightBoundary(rng)
                     return MarkType+" " + str(LeftBound) +" " +str(Direction)+" "+str(RightBound)
 
-            
                 return "UNSUPPORTED array_subtype_definition"
 
         #this type includes integer with range definition (node is subtype_indication)
@@ -172,9 +163,9 @@ def get_port_type(port) -> str:
             #get informations from subnode range_expression
             NodeRangeExpression=nodes.Get_Range_Constraint(subtype)
             #get ranges 
-            LeftBound=nodes.Get_Value(nodes.Get_Left_Limit_Expr(NodeRangeExpression))
+            LeftBound=EvaluateLeftBoundary(NodeRangeExpression)
             Direction="downto" if nodes.Get_Direction(NodeRangeExpression) else "to"
-            RightBound=nodes.Get_Value(nodes.Get_Right_Limit_Expr(NodeRangeExpression))
+            RightBound=EvaluateRightBoundary(NodeRangeExpression)
 
             return MarkType+" " + str(LeftBound) +" " +str(Direction)+" "+str(RightBound)
 
@@ -244,7 +235,6 @@ def list_units(filename):
                 #get every architecture declarations
                 for Declarations in pyutils.declarations_iter(libraryUnit):
                 # for Definitions in pyutils.chain_iter(nodes.Get_Declaration_Chain(libraryUnit)):
-                    print(".")
                     print(DisplayDeclInfo(Declarations))
 
         else:

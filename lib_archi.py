@@ -85,7 +85,7 @@ def EvaluateBoundary(node,dir) -> str:
         Bound=nodes.Get_Value(Get_Bound(node))
     #attribute case
     if nodes.Get_Kind(Get_Bound(node))==nodes.Iir_Kind.Attribute_Name:
-        Bound="attribute"
+        Bound=getIdentifier(nodes.Get_Prefix(Get_Bound(node)))+"'"+getIdentifier(Get_Bound(node))
     return Bound
 
 def DisplayNodeInfo(node) -> str:
